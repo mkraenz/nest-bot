@@ -1,0 +1,7 @@
+POST http://localhost:3000/cats
+Content-Type: application/json
+
+{
+    "fluffiness": 9000,
+    "color": "red"
+}
