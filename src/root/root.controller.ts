@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { Roles } from 'src/roles-guard/roles.decorator';
+import { Roles } from '../roles-guard/roles.decorator';
 import { AppService } from './root.service';
 
 @Controller()

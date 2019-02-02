@@ -14,9 +14,11 @@ describe('CatsController', () => {
         controller = app.get<CatsController>(CatsController);
     });
 
-    describe('cat', () => {
-        it('should return "I love Cats!"', () => {
-            expect(controller.findAll()).toBe('I love Cats!');
+    describe('/cats', () => {
+        it('should return ', async () => {
+            expect(await controller.findAll()).toEqual([
+                { fluffiness: 23, color: 'grey' },
+            ]);
         });
     });
 });

@@ -1,4 +1,5 @@
 import { CookieParserMiddleware } from '@nest-middlewares/cookie-parser';
+import { MorganMiddleware } from '@nest-middlewares/morgan';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { CatsModule } from './cats/cats.module';
@@ -18,7 +19,9 @@ import { RootModule } from './root/root.module';
 export class AppModule {
     public configure(consumer: MiddlewareConsumer) {
         const ALL = { path: '*', method: RequestMethod.ALL };
-        consumer.apply(CookieParserMiddleware).forRoutes(ALL);
         consumer.apply(loggerMiddleware).forRoutes(ALL);
+        consumer.apply(CookieParserMiddleware).forRoutes(ALL);
+        MorganMiddleware.configure('tiny');
+        consumer.apply(MorganMiddleware).forRoutes(ALL);
     }
 }
