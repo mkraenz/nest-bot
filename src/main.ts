@@ -7,5 +7,4 @@ async function startServer() {
     app.useGlobalPipes(new ValidationPipe());
     await app.listen(3000);
 }
-
 startServer();

@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Roles } from 'src/roles-guard/roles.decorator';
+import { AppService } from './root.service';
 
 @Controller()
 export class AppController {
@@ -8,5 +9,11 @@ export class AppController {
     @Get()
     public getHello(): string {
         return this.appService.getHello();
+    }
+
+    @Get('admin')
+    @Roles('admin')
+    public getAdminHello(): string {
+        return this.appService.onlyForAdmins();
     }
 }

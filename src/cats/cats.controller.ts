@@ -7,7 +7,7 @@ import {
     Post,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './create-cat-dto';
+import { CreateCatDto } from './create-cat.dto';
 import { ICat } from './i-cat';
 
 @Controller('cats')
@@ -15,8 +15,8 @@ export class CatsController {
     constructor(private readonly service: CatsService) {}
 
     @Post()
-    public async createCat(@Body() params: CreateCatDto) {
-        this.service.create(params);
+    public async createCat(@Body() asdf: CreateCatDto) {
+        this.service.create(asdf);
     }
 
     @Get()
