@@ -1,0 +1,3 @@
+GET /authrequired
+Host: localhost:3000
+Authorization: Bearer my-token

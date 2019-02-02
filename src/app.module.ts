@@ -2,13 +2,15 @@ import { CookieParserMiddleware } from '@nest-middlewares/cookie-parser';
 import { MorganMiddleware } from '@nest-middlewares/morgan';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './auth/auth.module';
 import { CatsModule } from './cats/cats.module';
 import { loggerMiddleware } from './logger.middleware';
 import { RolesGuard } from './roles-guard/roles.guard';
 import { RootModule } from './root/root.module';
+import { UserModule } from './users/users.module';
 
 @Module({
-    imports: [RootModule, CatsModule],
+    imports: [UserModule, AuthModule, RootModule, CatsModule],
     providers: [
         {
             provide: APP_GUARD,

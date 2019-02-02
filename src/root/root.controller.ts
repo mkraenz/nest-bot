@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../roles-guard/roles.decorator';
 import { AppService } from './root.service';
 
@@ -15,5 +16,11 @@ export class AppController {
     @Roles('admin')
     public getAdminHello(): string {
         return this.appService.onlyForAdmins();
+    }
+
+    @Get('authrequired')
+    @UseGuards(AuthGuard('bearer'))
+    public getOnlyIfAuthenticated(): string {
+        return 'you are authenticated';
     }
 }

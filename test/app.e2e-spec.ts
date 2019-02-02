@@ -2,22 +2,48 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
-describe('AppController (e2e)', () => {
-  let app;
+describe('App (e2e)', () => {
+    let app;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    beforeEach(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [AppModule],
+        }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
+    it('/ GET', () => {
+        return request(app.getHttpServer())
+            .get('/')
+            .expect(200)
+            .expect('Hello World!');
+    });
+
+    it('/authrequired GET -> 401', () => {
+        return request(app.getHttpServer())
+            .get('/authrequired')
+            .expect(401);
+    });
+
+    it('/authrequired GET -> 200', () => {
+        return request(app.getHttpServer())
+            .get('/authrequired')
+            .set('Authorization', 'Bearer my-token')
+            .expect(200);
+    });
+
+    it('/admin GET -> 403', () => {
+        return request(app.getHttpServer())
+            .get('/admin')
+            .expect(403);
+    });
+
+    it('/admin GET -> 200', () => {
+        return request(app.getHttpServer())
+            .get('/admin')
+            .set('Cookie', 'userrole=admin')
+            .expect(200);
+    });
 });
