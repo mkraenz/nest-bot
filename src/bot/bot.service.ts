@@ -48,8 +48,10 @@ export class BotService {
 
     private requestPrices(pollIntervalInMs: number): Observable<string> {
         const interval$ = interval(pollIntervalInMs);
-        interval$.pipe(takeUntil(this.stop$));
-        const requestUrl$ = interval$.pipe(map(_ => this.url));
+        const requestUrl$ = interval$.pipe(
+            map(_ => this.url),
+            takeUntil(this.stop$),
+        );
         const response$ = requestUrl$.pipe(flatMap(doRequest));
         return response$;
     }
