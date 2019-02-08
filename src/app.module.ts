@@ -3,14 +3,23 @@ import { MorganMiddleware } from '@nest-middlewares/morgan';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
+import { BotModule } from './bot/bot.module';
 import { CatsModule } from './cats/cats.module';
 import { loggerMiddleware } from './logger.middleware';
+import { MockPricesModule } from './mock-prices/mock-prices.module';
 import { RolesGuard } from './roles-guard/roles.guard';
 import { RootModule } from './root/root.module';
 import { UserModule } from './users/users.module';
 
 @Module({
-    imports: [UserModule, AuthModule, RootModule, CatsModule],
+    imports: [
+        UserModule,
+        AuthModule,
+        RootModule,
+        CatsModule,
+        BotModule,
+        MockPricesModule,
+    ],
     providers: [
         {
             provide: APP_GUARD,
