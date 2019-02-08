@@ -24,7 +24,6 @@ export class BotService {
         price$.subscribe(prices => this.movingAverages.push(average(prices)));
     }
 
-    /** stops sending requests by  */
     public stop() {
         this.stop$.next('stop-signal');
         this.stop$.complete();

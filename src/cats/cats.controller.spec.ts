@@ -15,7 +15,7 @@ describe('CatsController', () => {
     });
 
     describe('/cats', () => {
-        it('should return ', async () => {
+        it('should return a cat', async () => {
             expect(await controller.findAll()).toEqual([
                 { fluffiness: 23, color: 'grey' },
             ]);

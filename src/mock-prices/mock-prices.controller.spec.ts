@@ -17,4 +17,11 @@ describe('MockPrices Controller', () => {
     it('should be defined', () => {
         expect(controller).toBeDefined();
     });
+
+    describe('getPrices()', () => {
+        it('should return a positive number', () => {
+            expect(typeof controller.getPrices()).toBe('number');
+            expect(controller.getPrices()).toBeGreaterThan(0);
+        });
+    });
 });

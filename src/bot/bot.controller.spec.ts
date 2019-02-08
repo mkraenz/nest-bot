@@ -17,4 +17,12 @@ describe('Bot Controller', () => {
     it('should be defined', () => {
         expect(controller).toBeDefined();
     });
+
+    it('getMovingAverages() should return empty array', () => {
+        expect(controller.getMovingAverages()).toEqual([]);
+    });
+
+    it('getPrices() should return empty array', () => {
+        expect(controller.getPrices()).toEqual([]);
+    });
 });
