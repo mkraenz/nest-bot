@@ -1,11 +1,15 @@
 import { Injectable, Optional } from '@nestjs/common';
 import * as request from 'request-promise-native';
-import { Observable, of, timer } from 'rxjs';
-import { catchError, flatMap, map } from 'rxjs/operators';
+import { AsyncSubject, interval, Observable } from 'rxjs';
+import { bufferCount, flatMap, map, takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class BotService {
     private prices: number[] = [];
+    private movingAverages: number[] = [];
+
+    private bufferSize = 3;
+    private stop$ = new AsyncSubject();
 
     constructor(
         @Optional() private url: string = 'http://localhost:3000/prices',
@@ -16,28 +20,48 @@ export class BotService {
     public start() {
         const response$ = this.requestPrices(100);
         const price$ = this.parsePrices(response$);
-        price$.subscribe(price => {
-            this.prices.push(price);
-        });
+        price$.subscribe(prices => this.prices.push(prices[0]));
+        price$.subscribe(prices => this.movingAverages.push(average(prices)));
+    }
+
+    /** stops sending requests by  */
+    public stop() {
+        this.stop$.next('stop-signal');
+        this.stop$.complete();
     }
 
     public getPrices() {
         return this.prices;
     }
 
+    public getMovingAverages() {
+        return this.movingAverages;
+    }
+
+    public setBufferSize(newSize: number) {
+        this.bufferSize = newSize;
+    }
+
+    public reset() {
+        this.prices = [];
+        this.movingAverages = [];
+    }
+
     private requestPrices(pollIntervalInMs: number): Observable<string> {
-        // TODO: error handling
-        const timer$ = timer(0, pollIntervalInMs);
-        const requestUrl$ = timer$.pipe(map(_ => this.url));
+        const interval$ = interval(pollIntervalInMs);
+        interval$.pipe(takeUntil(this.stop$));
+        const requestUrl$ = interval$.pipe(map(_ => this.url));
         const response$ = requestUrl$.pipe(flatMap(doRequest));
         return response$;
     }
 
-    private parsePrices(response$: Observable<string>): Observable<number> {
-        // TODO: error handling
+    private parsePrices(response$: Observable<string>): Observable<number[]> {
         return response$.pipe(
-            map(priceString => {
-                return parseInt(priceString, 10);
+            bufferCount(this.bufferSize, 1),
+            map(lastThreePrices => {
+                return lastThreePrices.map(priceString =>
+                    parseInt(priceString, 10),
+                );
             }),
         );
     }
@@ -50,4 +74,9 @@ async function doRequest(url: string) {
     } catch (error) {
         // do nothing
     }
+}
+
+function average(prices: number[]): number {
+    const sum = prices.reduce((acc, current) => acc + current);
+    return sum / prices.length;
 }
