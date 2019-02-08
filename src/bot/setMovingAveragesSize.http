@@ -1,0 +1,1 @@
+PUT http://localhost:3000/bot/set-moving-average-size/121
