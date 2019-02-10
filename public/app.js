@@ -13,20 +13,28 @@ var chartConfig = {
     datasets: [],
 };
 
-function getChartConfig(priceData, mvaData) {
+function getChartConfig(priceData, mvaMapAsArray) {
     chartConfig.labels = [...Array(priceData.length).keys()];
     chartConfig.datasets.push(getDataSetEntry('Prices', priceData, Color.Blue));
-    chartConfig.datasets.push(getDataSetEntry('mva', mvaData, Color.Red));
+    mvaMapAsArray.forEach((keyXDataPoints, index) =>
+        chartConfig.datasets.push(
+            getDataSetEntry(
+                `mva ${keyXDataPoints[0]}`,
+                keyXDataPoints[1],
+                Object.values(Color)[(index + 1) % Object.values(Color).length],
+            ),
+        ),
+    );
 }
 
 async function main() {
     try {
         const host = 'http://localhost:3000';
-        const response = await fetch(`${host}/price`);
+        const response = await fetch(`${host}/prices`);
         const priceData = await response.json();
-        const mvaResponse = await fetch(`${host}/moving-averages`);
-        const mvaData = await mvaResponse.json();
-        getChartConfig(priceData, mvaData);
+        const mvaResponse = await fetch(`${host}/moving-averages/all`);
+        const mvaMapAsArray = await mvaResponse.json();
+        getChartConfig(priceData, mvaMapAsArray);
         renderWeatherChart(chartConfig);
     } catch (error) {
         console.log(error);
@@ -60,9 +68,9 @@ function getDataSetEntry(label, data, color) {
 const Color = {
     Blue: 'rgba(75,192,192,1)',
     Red: 'rgba(255,0,0)',
+    Gelb: 'rgba(0,255,0',
     Brown: '#893102',
     Violet: '#814395',
-    Green: '#0f790e',
 };
 
 function roundToTwoDecimalPlaces(val) {
