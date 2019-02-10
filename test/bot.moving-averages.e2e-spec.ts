@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
-describe('Bot (e2e)', () => {
+describe('MovingAverages (e2e)', () => {
     let app;
 
     beforeEach(async () => {
@@ -14,10 +14,17 @@ describe('Bot (e2e)', () => {
         await app.init();
     });
 
-    it('/bot/reset GET -> 200', () => {
+    it('/moving-averages/create POST -> 201', () => {
         return request(app.getHttpServer())
-            .get('/bot/drop')
+            .post('/moving-averages/create')
+            .send({ key: 'my-test-key', periods: 123 })
+            .expect(201);
+    });
+
+    it('/moving-averages/default GET -> 200', () => {
+        return request(app.getHttpServer())
+            .get('/moving-averages/default')
             .expect(200)
-            .expect('success');
+            .expect([]);
     });
 });

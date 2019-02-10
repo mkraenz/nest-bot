@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
-describe('Bot (e2e)', () => {
+describe('Price (e2e)', () => {
     let app;
 
     beforeEach(async () => {
@@ -14,9 +14,16 @@ describe('Bot (e2e)', () => {
         await app.init();
     });
 
-    it('/bot/reset GET -> 200', () => {
+    it('/price GET -> 200', () => {
         return request(app.getHttpServer())
-            .get('/bot/drop')
+            .get('/price')
+            .expect(200)
+            .expect([]);
+    });
+
+    it('price/stop GET -> 200', () => {
+        return request(app.getHttpServer())
+            .get('/price/stop')
             .expect(200)
             .expect('success');
     });

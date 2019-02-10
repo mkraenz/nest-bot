@@ -1,0 +1,7 @@
+POST http://localhost:3000/moving-averages/create
+Content-Type: application/json
+
+{
+    "key": "new-mva",
+    "periods": 123
+}

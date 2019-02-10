@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { MockPricesService } from './mock-prices.service';
 
-@Controller('prices')
+@Controller('mock-price')
 export class MockPricesController {
     constructor(private readonly service: MockPricesService) {}
 
