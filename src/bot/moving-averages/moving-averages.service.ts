@@ -15,6 +15,10 @@ export class MovingAveragesService implements IDroppable {
     constructor(@Inject(PriceService) priceService: IPriceStreamProvider) {
         this.price$ = priceService.getPrice$();
         this.create(DEFAULT_PERIODS);
+
+        // todo allow adding mva via frontend
+        this.create(50);
+        this.create(200);
     }
 
     public findOne(periods: number): number[] {
