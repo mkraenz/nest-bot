@@ -17,6 +17,6 @@ export class MovingAverages {
 }
 
 function average(prices: number[]): number {
-    const sum = prices.reduce((acc, current) => acc + current);
+    const sum = prices.reduce((acc, current) => acc + current, 0);
     return sum / prices.length;
 }

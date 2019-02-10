@@ -14,16 +14,16 @@ describe('Price (e2e)', () => {
         await app.init();
     });
 
-    it('/price GET -> 200', () => {
+    it('/prices GET -> 200', () => {
         return request(app.getHttpServer())
-            .get('/price')
+            .get('/prices')
             .expect(200)
             .expect([]);
     });
 
-    it('price/stop GET -> 200', () => {
+    it('prices/stop GET -> 200', () => {
         return request(app.getHttpServer())
-            .get('/price/stop')
+            .get('/prices/stop')
             .expect(200)
             .expect('success');
     });

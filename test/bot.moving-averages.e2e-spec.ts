@@ -21,10 +21,17 @@ describe('MovingAverages (e2e)', () => {
             .expect(201);
     });
 
-    it('/moving-averages/default GET -> 200', () => {
+    it('/moving-averages/by-key/default GET -> 200', () => {
         return request(app.getHttpServer())
-            .get('/moving-averages/default')
+            .get('/moving-averages/by-key/default')
             .expect(200)
             .expect([]);
+    });
+
+    it('/moving-averages/all GET -> 200', () => {
+        return request(app.getHttpServer())
+            .get('/moving-averages/all')
+            .expect(200)
+            .expect([['default', []]]);
     });
 });

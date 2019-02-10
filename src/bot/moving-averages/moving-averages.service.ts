@@ -11,7 +11,7 @@ export class MovingAveragesService implements IDroppable {
     private mvaArraysMap = new Map<string, number[]>();
     private price$: Observable<number>;
 
-    private readonly DEFAULT_PERIODS = 20;
+    private readonly DEFAULT_PERIODS = 10;
 
     constructor(@Inject(PriceService) priceService: IPriceStreamProvider) {
         this.price$ = priceService.getPrice$();

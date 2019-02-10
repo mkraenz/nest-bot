@@ -32,8 +32,6 @@ async function main() {
         console.log(error);
     }
 }
-main();
-
 function getDataSetEntry(label, data, color) {
     return {
         label,
@@ -62,4 +60,13 @@ function getDataSetEntry(label, data, color) {
 const Color = {
     Blue: 'rgba(75,192,192,1)',
     Red: 'rgba(255,0,0)',
+    Brown: '#893102',
+    Violet: '#814395',
+    Green: '#0f790e',
 };
+
+function roundToTwoDecimalPlaces(val) {
+    return Math.round(val * 100) / 100;
+}
+
+main();
