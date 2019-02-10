@@ -4,38 +4,37 @@ import { IDroppable } from '../common/i-droppable';
 import { IPriceStreamProvider } from '../common/i-price-stream-provider';
 import { PriceService } from '../price/price.service';
 import { MovingAverages } from './moving-averages';
+import { DEFAULT_PERIODS } from './moving-averages.config';
 
 @Injectable()
 export class MovingAveragesService implements IDroppable {
-    private mvaMap = new Map<string, MovingAverages>();
-    private mvaArraysMap = new Map<string, number[]>();
+    private mvaMap = new Map<number, MovingAverages>();
+    private mvaArraysMap = new Map<number, number[]>();
     private price$: Observable<number>;
-
-    private readonly DEFAULT_PERIODS = 10;
 
     constructor(@Inject(PriceService) priceService: IPriceStreamProvider) {
         this.price$ = priceService.getPrice$();
-        this.create('default', this.DEFAULT_PERIODS);
+        this.create(DEFAULT_PERIODS);
     }
 
-    public findOne(key: string): number[] {
-        return this.mvaArraysMap.get(key);
+    public findOne(periods: number): number[] {
+        return this.mvaArraysMap.get(periods);
     }
 
-    public findAll(): Array<[string, number[]]> {
+    public findAll(): Array<[number, number[]]> {
         return [...this.mvaArraysMap];
     }
 
-    public create(key: string, periods: number) {
-        if (this.mvaMap.has(key)) {
-            throw new Error(`key '${key}' already in use`);
+    public create(periods: number) {
+        if (this.mvaMap.has(periods)) {
+            throw new Error(`periods '${periods}' already exists`);
         }
 
         const mva = new MovingAverages(this.price$, periods);
         const mvaArray: number[] = [];
 
-        this.mvaMap.set(key, mva);
-        this.mvaArraysMap.set(key, mvaArray);
+        this.mvaMap.set(periods, mva);
+        this.mvaArraysMap.set(periods, mvaArray);
 
         mva.getMva$().subscribe(average => mvaArray.push(average));
     }

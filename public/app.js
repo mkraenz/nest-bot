@@ -16,30 +16,16 @@ var chartConfig = {
 function getChartConfig(priceData, mvaMapAsArray) {
     chartConfig.labels = [...Array(priceData.length).keys()];
     chartConfig.datasets.push(getDataSetEntry('Prices', priceData, Color.Blue));
-    mvaMapAsArray.forEach((keyXDataPoints, index) =>
+    mvaMapAsArray.forEach((periodsAndData, index) => {
+        const periods = periodsAndData[0];
+        const chartOffset = priceData.length - periodsAndData[1].length;
+        const data = new Array(chartOffset).concat(periodsAndData[1]);
         chartConfig.datasets.push(
-            getDataSetEntry(
-                `mva ${keyXDataPoints[0]}`,
-                keyXDataPoints[1],
-                Object.values(Color)[(index + 1) % Object.values(Color).length],
-            ),
-        ),
-    );
+            getDataSetEntry(`mva(${periods})`, data, getColor(index)),
+        );
+    });
 }
 
-async function main() {
-    try {
-        const host = 'http://localhost:3000';
-        const response = await fetch(`${host}/prices`);
-        const priceData = await response.json();
-        const mvaResponse = await fetch(`${host}/moving-averages/all`);
-        const mvaMapAsArray = await mvaResponse.json();
-        getChartConfig(priceData, mvaMapAsArray);
-        renderWeatherChart(chartConfig);
-    } catch (error) {
-        console.log(error);
-    }
-}
 function getDataSetEntry(label, data, color) {
     return {
         label,
@@ -73,8 +59,26 @@ const Color = {
     Violet: '#814395',
 };
 
+function getColor(index) {
+    return Object.values(Color)[(index + 1) % Object.values(Color).length];
+}
+
 function roundToTwoDecimalPlaces(val) {
     return Math.round(val * 100) / 100;
+}
+
+async function main() {
+    try {
+        const host = 'http://localhost:3000';
+        const response = await fetch(`${host}/prices`);
+        const priceData = await response.json();
+        const mvaResponse = await fetch(`${host}/moving-averages/all`);
+        const mvaMapAsArray = await mvaResponse.json();
+        getChartConfig(priceData, mvaMapAsArray);
+        renderWeatherChart(chartConfig);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 main();

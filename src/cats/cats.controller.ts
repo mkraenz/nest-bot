@@ -4,6 +4,7 @@ import {
     Get,
     NotFoundException,
     Param,
+    ParseIntPipe,
     Post,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
@@ -25,7 +26,9 @@ export class CatsController {
     }
 
     @Get(':id')
-    public async findOne(@Param() { id }: { id: number }): Promise<ICat> {
+    public async findOne(
+        @Param('id', new ParseIntPipe()) id: number,
+    ): Promise<ICat> {
         const cat = await this.service.findOne(id);
         if (!cat) {
             throw new NotFoundException();

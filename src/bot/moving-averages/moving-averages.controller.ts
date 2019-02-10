@@ -4,10 +4,12 @@ import {
     Get,
     NotFoundException,
     Param,
+    ParseIntPipe,
     Post,
     Res,
 } from '@nestjs/common';
 import { CreateMovingAveragesDto } from './create-moving-averages.dto';
+import { DEFAULT_PERIODS } from './moving-averages.config';
 import { MovingAveragesService } from './moving-averages.service';
 
 @Controller('moving-averages')
@@ -16,26 +18,31 @@ export class MovingAveragesController {
 
     @Get()
     public findOneDefault(@Res() res) {
-        res.redirect('moving-averages/by-key/default');
+        res.redirect(`moving-averages/by-periods/${DEFAULT_PERIODS}`);
     }
 
-    @Get('by-key/:key')
-    public findOne(@Param('key') key: string) {
-        const result = this.service.findOne(key);
-        if (!result) {
-            throw new NotFoundException();
+    @Get('by-periods/:periods')
+    public findOne(@Param('periods', new ParseIntPipe()) periods: number) {
+        try {
+            const result = this.service.findOne(periods);
+            if (!result) {
+                throw new NotFoundException();
+            }
+            return result.map(roundToTwoDecimalPlaces);
+        } catch (error) {
+            throw error;
         }
-        return result.map(roundToTwoDecimalPlaces);
     }
 
     @Get('all')
     public findAll() {
+        // todo round to two dec
         return this.service.findAll();
     }
 
     @Post('create')
     public createMovingAverages(@Body() createMvaDto: CreateMovingAveragesDto) {
-        this.service.create(createMvaDto.key, createMvaDto.periods);
+        this.service.create(createMvaDto.periods);
     }
 }
 

@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+const DEFAULT_PERIODS = 10;
+
 describe('MovingAverages (e2e)', () => {
     let app;
 
@@ -17,21 +19,27 @@ describe('MovingAverages (e2e)', () => {
     it('/moving-averages/create POST -> 201', () => {
         return request(app.getHttpServer())
             .post('/moving-averages/create')
-            .send({ key: 'my-test-key', periods: 123 })
+            .send({ periods: 123 })
             .expect(201);
     });
 
-    it('/moving-averages/by-key/default GET -> 200', () => {
+    it(`/moving-averages/by-periods/${DEFAULT_PERIODS} GET -> 200`, () => {
         return request(app.getHttpServer())
-            .get('/moving-averages/by-key/default')
+            .get(`/moving-averages/by-periods/${DEFAULT_PERIODS}`)
             .expect(200)
             .expect([]);
+    });
+
+    it('/moving-averages/ GET -> 302', () => {
+        return request(app.getHttpServer())
+            .get('/moving-averages')
+            .expect(302);
     });
 
     it('/moving-averages/all GET -> 200', () => {
         return request(app.getHttpServer())
             .get('/moving-averages/all')
             .expect(200)
-            .expect([['default', []]]);
+            .expect([[DEFAULT_PERIODS, []]]);
     });
 });
