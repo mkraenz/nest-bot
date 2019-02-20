@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
-const DEFAULT_PERIODS = 10;
+const DEFAULT_PERIODS = 10; // also 50 and 200
 
 describe('MovingAverages (e2e)', () => {
     let app;
@@ -23,6 +23,18 @@ describe('MovingAverages (e2e)', () => {
             .expect(201);
     });
 
+    it('/moving-averages/create POST twice -> 400', async () => {
+        await request(app.getHttpServer())
+            .post('/moving-averages/create')
+            .send({ periods: 123 })
+            .expect(201);
+        return request(app.getHttpServer())
+            .post('/moving-averages/create')
+            .send({ periods: 123 })
+            .expect(400)
+            .expect(/already exists/i);
+    });
+
     it(`/moving-averages/by-periods/${DEFAULT_PERIODS} GET -> 200`, () => {
         return request(app.getHttpServer())
             .get(`/moving-averages/by-periods/${DEFAULT_PERIODS}`)
@@ -40,6 +52,6 @@ describe('MovingAverages (e2e)', () => {
         return request(app.getHttpServer())
             .get('/moving-averages/all')
             .expect(200)
-            .expect([[DEFAULT_PERIODS, []]]);
+            .expect([[10, []], [50, []], [200, []]]);
     });
 });

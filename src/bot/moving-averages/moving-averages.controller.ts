@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
@@ -23,29 +24,36 @@ export class MovingAveragesController {
 
     @Get('by-periods/:periods')
     public findOne(@Param('periods', new ParseIntPipe()) periods: number) {
-        try {
-            const result = this.service.findOne(periods);
-            if (!result) {
-                throw new NotFoundException();
-            }
-            return result.map(roundToTwoDecimalPlaces);
-        } catch (error) {
-            throw error;
-        }
+        const result = this.service.findOne(periods);
+        assertFound(result);
+        return result.map(roundToTwoDecimalPlaces);
     }
 
     @Get('all')
     public findAll() {
-        // todo round to two dec
-        return this.service.findAll();
+        const mapAsDoubleArray = this.service.findAll();
+        return mapAsDoubleArray.map(entry => [
+            entry[0],
+            entry[1].map(roundToTwoDecimalPlaces),
+        ]);
     }
 
     @Post('create')
     public createMovingAverages(@Body() createMvaDto: CreateMovingAveragesDto) {
-        this.service.create(createMvaDto.periods);
+        try {
+            this.service.create(createMvaDto.periods);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
     }
 }
 
 function roundToTwoDecimalPlaces(val: number): number {
     return Math.round(val * 100) / 100;
+}
+
+function assertFound(arg: any) {
+    if (!arg) {
+        throw new NotFoundException();
+    }
 }

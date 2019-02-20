@@ -21,11 +21,11 @@ export class MovingAveragesService implements IDroppable {
         this.create(200);
     }
 
-    public findOne(periods: number): number[] {
+    public findOne(periods: number) {
         return this.mvaArraysMap.get(periods);
     }
 
-    public findAll(): Array<[number, number[]]> {
+    public findAll() {
         return [...this.mvaArraysMap];
     }
 

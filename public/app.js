@@ -52,9 +52,9 @@ function getDataSetEntry(label, data, color) {
 }
 
 const Color = {
-    Blue: 'rgba(75,192,192,1)',
+    Blue: 'rgba(75,192,192)',
     Red: 'rgba(255,0,0)',
-    Gelb: 'rgba(0,255,0',
+    Green: 'rgba(0,255,0)',
     Brown: '#893102',
     Violet: '#814395',
 };
